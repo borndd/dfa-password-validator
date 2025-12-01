@@ -3,69 +3,142 @@
 
 ---
 
-## 📌 Overview  
-This project demonstrates how **Deterministic Finite Automata (DFA)** can be used to formally define and validate password rules. Instead of writing simple if-else checks, we design a DFA that models the password policy and then implement a DFA simulator in Python.
+## 📌 Problem Statement
 
-This approach links theoretical automata concepts with practical real-world applications such as authentication systems.
+Weak passwords are a significant security risk in real authentication systems. To ensure strong user credentials, applications must automatically validate passwords according to a clear and enforceable policy.
+
+Instead of validating passwords using scattered conditional statements, this project uses **Deterministic Finite Automata (DFA)** to formally describe the password policy. Using an automaton guarantees that the validation logic is:
+
+- Deterministic  
+- Correct  
+- Verifiable  
+- Easy to simulate and test (using JFLAP)  
+- Simple to implement programmatically (Python)
 
 ---
 
-## 📌 Problem Statement  
-Weak passwords pose major security risks in real systems. A strong password policy must ensure:  
+## 📌 Password Policy Requirements
 
-- Minimum length requirement  
-- Inclusion of required character types  
-- No forbidden characters  
-- Fully deterministic validation  
+A valid password must satisfy **all** of the following:
 
-To guarantee correctness, we model the policy using a **Deterministic Finite Automaton (DFA)**.
-
-### **Goal:**  
-Build a DFA that validates passwords according to the following rules:
-
-1. **Length ≥ 6**  
-2. **At least one uppercase letter (A–Z)**  
-3. **At least one digit (0–9)**  
-4. **Only letters and digits allowed**  
+1. **Length ≥ 6**
+2. **At least one uppercase letter (A–Z)**
+3. **At least one digit (0–9)**
+4. **Only letters and digits are allowed**  
 5. Any forbidden character → transition to a **dead state**
 
+This set of rules is modeled as a deterministic finite automaton.
+
 ---
 
-## 📌 Automata Model Used
+## 📌 Automata Model Used (DFA)
 
-### ✔ Alphabet (Σ)
+### **Alphabet (Σ)**
+
 Σ = { U, L, D }
 Where:
-U = any uppercase letter
-L = any lowercase letter
-D = any digit
-X = any forbidden symbol → leads to dead state
+U = uppercase letter (A–Z)
+L = lowercase letter (a–z)
+D = digit (0–9)
+X = forbidden symbol → DEAD STATE
 
-markdown
-Copy code
+### **States (Q)**
 
-### ✔ States (Q)  
-Each state encodes 3 flags:
+Each DFA state represents the progress of 3 conditions:
 
-- `hasUpper` – whether uppercase seen  
-- `hasDigit` – whether digit seen  
-- `lenOK` – whether length ≥ 6  
+- `hasUpper`  → Have we seen an uppercase letter?  
+- `hasDigit`  → Have we seen a digit?  
+- `lenOK`     → Is the length ≥ 6?  
 
-Example states:
-- `q0`: no uppercase, no digit, length < 6  
-- `qU`: uppercase seen, digit not yet seen  
-- `qD`: digit seen, uppercase not seen  
-- `qUDLen`: uppercase + digit + length ≥ 6 → **ACCEPTING STATE**  
-- `qDead`: forbidden input reached  
+**Example states:**
 
-### ✔ Transition Rules  
-- Reading `U` → set uppercase flag  
-- Reading `D` → set digit flag  
-- After the 6th symbol → set length flag  
-- Reading `X` → go to `qDead`  
+| State | Meaning |
+|-------|---------|
+| q0 | No uppercase, no digit, length < 6 |
+| qU | Uppercase seen |
+| qD | Digit seen |
+| qUD | Uppercase + digit seen |
+| qLen | Length ≥ 6, but missing uppercase or digit |
+| qUDLen | Uppercase + digit + length ≥ 6 → **ACCEPTING STATE** |
+| qDead | Forbidden character → trapped forever |
 
-### ✔ Accepting States  
-Any state in which:
+### **Start State**
+q0
+
+### **Accepting States**
+Any state where:
 hasUpper = True
 hasDigit = True
 lenOK = True
+
+### **Dead State**
+qDead → entered if any character ∉ Σ
+## ▶️ How to Run the Python Programs
+
+### **1. Running the GUI version (Tkinter)**
+
+Requires Python 3.
+
+```bash
+cd code
+python password_gui.py
+A window will appear where you can enter a password and click Validate.
+A pop-up message will show whether the DFA accepts or rejects the password.
+
+2. Running the CLI (Terminal) version
+python PROJECT.py
+Enter a password in the terminal and see the DFA-based validation result.
+
+
+
+Steps
+Launch JFLAP
+
+Go to File → Open
+
+Select:
+
+
+automata/PROJECT.jff
+To simulate:
+
+Click Input → Step by Step
+
+Enter a test password
+
+Observe how the DFA transitions through states
+
+If the DFA ends in an accepting state, the password is valid
+
+This allows step-by-step theoretical verification.
+
+📘 Theoretical Notes
+Why model password rules with a DFA?
+DFA ensures formally correct behavior
+
+No ambiguous conditions
+
+Easy to visualize & debug in JFLAP
+
+Pure deterministic transitions
+
+Perfect match for rule-driven validation systems
+
+Benefits:
+Guarantees total rule enforcement
+
+Helps students connect theory → real world
+
+Demonstrates how automata are used in compilers, parsers, and security systems
+
+📌 Conclusion
+This project demonstrates how finite automata can be applied to solve a practical, real-world problem: password validation. Using a DFA provides a mathematically sound, deterministic, and verifiable model.
+
+The project includes a complete DFA (.jff), Python implementations (GUI and CLI), and theoretical documentation.
+
+📬 Contact
+
+
+Author: Diyorbek Ismoilov  
+Student ID: 250487
+Course: Theory of Automata
